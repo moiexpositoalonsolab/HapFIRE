@@ -291,10 +291,10 @@ def haplotype_frequency_estimation(ch,block_partition,hap_matrix_d1,hap_matrix_d
 		snp_table.to_csv(snp_table_name,sep=",",header=False,index = False)
 		read_left_bound = max(variant_positions[left]-100,1)
 		read_right_bound = min(variant_positions[right]+100,variant_positions[-1])
-		like_command = "harp like --bam "+ bam + " --region "+str(ch)+":"+str(read_left_bound)+ \
+		like_command = "src/harp like --bam "+ bam + " --region "+str(ch)+":"+str(read_left_bound)+ \
 						"-"+str(read_right_bound)+" --refseq "+ reference_file + "  --snps  "+snp_table_name +"  --stem  " + prefix+"_"+str(ch)+"_"+str(i)
 		subprocess.check_call(like_command,shell=True)
-		freq_command = "harp freq --hlk " + prefix + "_" +str(ch)+"_"+str(i)+".hlk" + " --region "+str(ch)+":"+str(read_left_bound)+ \
+		freq_command = "src/harp freq --hlk " + prefix + "_" +str(ch)+"_"+str(i)+".hlk" + " --region "+str(ch)+":"+str(read_left_bound)+ \
 						"-"+str(read_right_bound)
 		try:
 			subprocess.check_call(freq_command,shell=True)
