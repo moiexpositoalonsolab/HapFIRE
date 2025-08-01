@@ -5,6 +5,7 @@ import subprocess
 import time
 import re
 import sys
+import os
 import cvxpy as cp
 from sklearn.neighbors import kneighbors_graph
 from scipy.sparse import csgraph
@@ -280,6 +281,7 @@ def haplotype_frequency_estimation(ch,block_partition,hap_matrix_d1,hap_matrix_d
 	hap_matrix_d1_pd = pd.DataFrame(np.transpose(hap_matrix_d1),columns=variant_names)
 	hap_matrix_d2_pd = pd.DataFrame(np.transpose(hap_matrix_d2),columns=variant_names)
 	r,c = hap_matrix_d1.shape
+	SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))	
 	for i in range(len(block_partition)):
 		left = block_partition[i][0]
 		right = block_partition[i][1]
@@ -291,10 +293,10 @@ def haplotype_frequency_estimation(ch,block_partition,hap_matrix_d1,hap_matrix_d
 		snp_table.to_csv(snp_table_name,sep=",",header=False,index = False)
 		read_left_bound = max(variant_positions[left]-100,1)
 		read_right_bound = min(variant_positions[right]+100,variant_positions[-1])
-		like_command = "src/harp like --bam "+ bam + " --region "+str(ch)+":"+str(read_left_bound)+ \
+		like_command = SCRIPT_DIR + "/src/harp like --bam "+ bam + " --region "+str(ch)+":"+str(read_left_bound)+ \
 						"-"+str(read_right_bound)+" --refseq "+ reference_file + "  --snps  "+snp_table_name +"  --stem  " + prefix+"_"+str(ch)+"_"+str(i)
 		subprocess.check_call(like_command,shell=True)
-		freq_command = "src/harp freq --hlk " + prefix + "_" +str(ch)+"_"+str(i)+".hlk" + " --region "+str(ch)+":"+str(read_left_bound)+ \
+		freq_command = SCRIPT_DIR + "/src/harp freq --hlk " + prefix + "_" +str(ch)+"_"+str(i)+".hlk" + " --region "+str(ch)+":"+str(read_left_bound)+ \
 						"-"+str(read_right_bound)
 		try:
 			subprocess.check_call(freq_command,shell=True)
@@ -607,8 +609,8 @@ def fine_haplotype_frequency_calculation(block_partitions,gw_independent_breakpo
 				haplotype_cluster_DM_ =pd.DataFrame(haplotype_cluster_DM_,columns=haplotype_cluster_names_)
 				clustered_haplotype_DM = pd.concat([clustered_haplotype_DM,haplotype_cluster_DM_],axis=1,ignore_index=True)
 
-				print("predicted",haplotype_cluster_frequency_)
-				print("true",vcf_haplotype_cluster_freq_)
+				#print("predicted",haplotype_cluster_frequency_)
+				#print("true",vcf_haplotype_cluster_freq_)
 				
 				unique_haplotype_frequency.extend(unique_haplotype_freq_)
 				haplotype_cluster_frequency.extend(haplotype_cluster_frequency_)
