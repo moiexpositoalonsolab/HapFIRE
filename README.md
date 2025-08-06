@@ -30,11 +30,11 @@ python3 hapFIRE.py <br>
     -b the sorted alignment bam file <br>
     -f reference fasta file <br>
     -s (calculate haplotype frequencies) (True/False ,default: False. ) _This step will be very slow and computationally expensive if you perform genome-wide fine block partition_ <br>
-    -p genome-wide block fine block partition algorithm (bigld)
-    -c the LD r2 cutoff for more defined blocks (default: 0.5)
-    -w window size for calculating independent blocks (default: 100)
-    -r the LD r2 cutoff for independent blocks (default: 0.1)
-    -o prefix of output files
+    -p genome-wide block fine block partition algorithm (bigld) <br>
+    -c the LD r2 cutoff for more defined blocks (default: 0.5) <br>
+    -w window size for calculating independent blocks (default: 100) <br>
+    -r the LD r2 cutoff for independent blocks (default: 0.1) <br>
+    -o prefix of output files <br>
 
 ## Usage
 The most common usage of hapfire is to estimate allele and genotype frequency from pool sequencing data
