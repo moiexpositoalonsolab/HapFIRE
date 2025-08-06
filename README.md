@@ -28,7 +28,7 @@ conda activate hapfire
     -v the phased vcf file <br>
     -b the sorted alignment bam file <br>
     -f reference fasta file <br>
-    -s (calculate haplotype frequencies) (True/False ,default: False. ) __This step will be very slow and computationally expensive if you perform genome-wide fine block partition__ <br>
+    -s (calculate haplotype frequencies) (True/False ,default: False. ) This step will be very slow and computationally expensive if you perform genome-wide fine block partition <br>
     -p genome-wide block fine block partition algorithm (bigld) <br>
     -c the LD r2 cutoff for more defined blocks (default: 0.5) <br>
     -w window size for calculating independent blocks (default: 100) <br>
