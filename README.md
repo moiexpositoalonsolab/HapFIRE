@@ -18,6 +18,13 @@ mamba env create -f environment.yml
 conda activate hapfire
 ```
 
+## Required input
+* Phased SNP vcf file as the reference panel
+  ** bealge 
+* sorted and index pool seq alignment bam file
+* reference genome fasta file
+
+
 ## Usage
 The most common usage of hapfire is to estimate allele and genotype frequency from pool sequencing data
 
