@@ -22,11 +22,11 @@ conda activate hapfire
 The most common usage of hapfire is to estimate allele and genotype frequency from pool sequencing data
 
 ```
-python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -o test
+python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -f example/example.fa -o test
 ```
 
 If you want to estimate haplotype frequency, HapFIRE will first perform genome-wide block partition and then cluster unique haplotypes from each block, and then estimate haplotype cluster frequencies
 
 ```
-python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -p bigld -o test
+python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -f example/example.fa -p bigld -o test
 ```
