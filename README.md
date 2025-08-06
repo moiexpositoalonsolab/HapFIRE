@@ -30,7 +30,8 @@ python3 hapFIRE.py
     -v the phased vcf file
     -b the sorted alignment bam file
     -f reference fasta file
-    -s (calculate haplotype frequencies) (True/False ,default: False. **This step will be very slow and computationally expensive if you perform genome-wide fine block partition**)
+    -s (calculate haplotype frequencies) (True/False ,default: False. )
+_This step will be very slow and computationally expensive if you perform genome-wide fine block partition_
     -p genome-wide block fine block partition algorithm (bigld)
     -c the LD r2 cutoff for more defined blocks (default: 0.5)
     -w window size for calculating independent blocks (default: 100)
