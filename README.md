@@ -25,15 +25,16 @@ conda activate hapfire
 
 ## Options
 ```
--v the phased vcf file
--b the sorted alignment bam file
--f reference fasta file
--s True/False (default: False)
--p bigld
--c (default: 0.5)
--w (default: 100)
--r (default: 0.1)
--o prefix of output files
+python3 hapFIRE.py -h
+  -v the phased vcf file
+  -b the sorted alignment bam file
+  -f reference fasta file
+  -s True/False (default: False)
+  -p bigld
+  -c (default: 0.5)
+  -w (default: 100)
+  -r (default: 0.1)
+  -o prefix of output files
 
 ```
 
