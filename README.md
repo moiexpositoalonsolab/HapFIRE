@@ -26,6 +26,7 @@ conda activate hapfire
 ## Options
 python3 hapFIRE.py
     -v the phased vcf file
+    
     -b the sorted alignment bam file
     -f reference fasta file
     -s (calculate haplotype frequencies) (True/False ,default: False. **This step will be very slow and computationally expensive if you perform genome-wide fine block partition**)
