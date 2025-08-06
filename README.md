@@ -2,7 +2,7 @@
 
 HapFIRE is a python-based pipeline to calculate allele and genotype frequencies from pool-seq data given founder SNP VCF file.
 
-Please cite the following paper for HapFIRE
+Please cite the following papers for HapFIRE
 
 * Wu, Xing, et al. "Rapid adaptation and extinction across climates in synchronized outdoor evolution experiments of Arabidopsis thaliana." bioRxiv (2025): 2025-05.
 
