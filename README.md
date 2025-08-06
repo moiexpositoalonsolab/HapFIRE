@@ -26,7 +26,7 @@ conda activate hapfire
 ## Options
 
 python3 hapFIRE.py
-'''
+
     -v the phased vcf file
     -b the sorted alignment bam file
     -f reference fasta file
@@ -36,7 +36,6 @@ python3 hapFIRE.py
     -w window size for calculating independent blocks (default: 100)
     -r the LD r2 cutoff for independent blocks (default: 0.1)
     -o prefix of output files
-'''
 
 ## Usage
 The most common usage of hapfire is to estimate allele and genotype frequency from pool sequencing data
