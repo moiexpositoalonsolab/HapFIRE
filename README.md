@@ -20,10 +20,22 @@ conda activate hapfire
 
 ## Required input
 * Phased SNP vcf file as the reference panel
-  ** bealge 
 * sorted and index pool seq alignment bam file
 * reference genome fasta file
 
+## Options
+```
+-v the phased vcf file
+-b the sorted alignment bam file
+-f reference fasta file
+-s True/False (default: False)
+-p bigld
+-c (default: 0.5)
+-w (default: 100)
+-r (default: 0.1)
+-o prefix of output files
+
+```
 
 ## Usage
 The most common usage of hapfire is to estimate allele and genotype frequency from pool sequencing data
@@ -37,3 +49,11 @@ If you want to estimate haplotype frequency, HapFIRE will first perform genome-w
 ```
 python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -f example/example.fa -s True -p bigld -o test
 ```
+
+## Program output
+* .snp_frequency.txt: The estimated frequencies of alternative alleles in the reference panel from the pool seq data.
+* .ecotype_frequency.txt: The estimated frequencies of all genotypes in the reference panel from the pool seq data.
+* .independent_genomewide_partition.txt: independent haplotype blocks (LD r2 0.1) identified by hapFIRE
+* .fine_genomewide_partition.txt: more defined haplotype blocks identified by user specification (usually bigLD)
+* .unique_haplotype_frequency.txt: The estimated frequencies of unique haplotypes with **-s** specified
+* .clustered_haplotype_frequency.txt The estimated frequencies of clustered haplotypes with **-s** and user specified haplotype clustering algorithm
