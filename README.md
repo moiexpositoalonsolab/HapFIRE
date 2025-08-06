@@ -1,59 +1,32 @@
 # HapFIRE
 
-* HapFIRE is a python-based pipeline to calculate allele and genotype frequencies from pool-seq data given founder SNP VCF file. *
+HapFIRE is a python-based pipeline to calculate allele and genotype frequencies from pool-seq data given founder SNP VCF file.
 
-This tool is described in 
+Please cite the following paper for HapFIRE
 
-Wu, Xing, et al. "Rapid adaptation and extinction across climates in synchronized outdoor evolution experiments of Arabidopsis thaliana." bioRxiv (2025): 2025-05.
+* Wu, Xing, et al. "Rapid adaptation and extinction across climates in synchronized outdoor evolution experiments of Arabidopsis thaliana." bioRxiv (2025): 2025-05.
 
-...
-
-## References
-[1] https://doi.org/10.1101/2025.05.28.654549
-Smith J., Doe A. *Title of the paper*. **Journal** 12 (3): 45-56 (2023)
-
-### Installing
+* Kessner, Darren, Thomas L. Turner, and John Novembre. "Maximum likelihood estimation of frequencies of known haplotypes from pooled sequence data." Molecular biology and evolution 30.5 (2013): 1145-1158.
 
 
-### Executing program
+## Installation
+HapFIRE relies on HARP to estimate the haplotype likelihood. To make everyone's life easier, we have included a pre-compiled version of harp (harp_linux_140925_103521). If you prefer to install another version, please replace the executable in the src folder. 
 
-* How to run the program
-* Step-by-step bullets
+Install via mamba
 ```
-code blocks for commands
+mamba env create -f environment.yml
+conda activate hapfire
 ```
 
-## Help
+## Usage
+The most common usage of hapfire is to estimate allele and genotype frequency from pool sequencing data
 
-Any advise for common problems or issues.
 ```
-command to run if program contains helper info
+python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -o test
 ```
 
-## Authors
+If you want to estimate haplotype frequency, HapFIRE will first perform genome-wide block partition and then cluster unique haplotypes from each block, and then estimate haplotype cluster frequencies
 
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+```
+python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -p bigld -o test
+```
