@@ -28,5 +28,5 @@ python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -f examp
 If you want to estimate haplotype frequency, HapFIRE will first perform genome-wide block partition and then cluster unique haplotypes from each block, and then estimate haplotype cluster frequencies
 
 ```
-python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -f example/example.fa -p bigld -o test
+python3 hapFIRE.py -v example/example.recode.vcf -b example/example.bam -f example/example.fa -s True -p bigld -o test
 ```
