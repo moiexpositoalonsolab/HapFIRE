@@ -19,6 +19,8 @@ import haplotype_generation as HG
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v',type = str, action= 'store',dest='vcf',help='the vcf file')
+parser.add_argument('-l',type = str, action= 'store',dest='large_block',default = "ld")
+parser.add_argument('-u',type = int, action= 'store',dest='stepsize',default = 50000)
 parser.add_argument('-p',type = str, action= 'store',dest='block')
 parser.add_argument('-b',type = str, action= 'store',dest='bam')
 parser.add_argument('-f',type = str, action= 'store',dest='reference')
@@ -26,7 +28,9 @@ parser.add_argument('-s',type = bool, action= 'store',dest='haplotype_frequency'
 parser.add_argument('-r',type = float, action = 'store', dest = 'corr',default = 0.1)
 parser.add_argument('-c',type = float, action = 'store', dest = 'CLQcut',default = 0.5)
 parser.add_argument('-w',type = int, action = 'store', dest = 'window',default = 100)
+parser.add_argument('-e',type = bool, action = 'store', dest = 'ecotype_matrix',default = False)
 parser.add_argument('-o',type = str, action = 'store', dest = 'output',help = "the prefix of the output files")
+
 
 
 
@@ -66,45 +70,71 @@ ecotype_frequency_selected = {}
 block_partitions = {}
 length = {}
 
-with open(args.output+"_alone_SNPs.txt", "w") as L:
+
+if args.large_block == "ld":
+
+	with open(args.output+"_alone_SNPs.txt", "w") as L:
+		for ch in chromosome:
+			geno_matrix[ch] = np.transpose(hap_matrix_d1[ch] + hap_matrix_d2[ch])
+			r,c = geno_matrix[ch].shape
+
+			# calculating the allele frequency and find common alleles 
+			allele_frequency = np.sum(geno_matrix[ch],axis = 0) / (2*r)
+			common_allele_index[ch] = [i for i in range(len(allele_frequency)) if allele_frequency[i] > 0.05 and allele_frequency[i] < 0.95 ]
+			common_geno_matrix[ch] = geno_matrix[ch][:,common_allele_index[ch]]
+			common_variant_names[ch] = [variant_names[ch][i] for i in common_allele_index[ch]]
+			common_variant_positions[ch] =[variant_positions[ch][i] for i in common_allele_index[ch]]
+
+			#standardize the genotype matrix
+			common_geno_matrix_standard = preprocessing.scale(common_geno_matrix[ch])
+			#partition into complete independent LD blocks
+			print("start finding complete independent LD blocks using common SNPs with maf > 0.1")
+
+			IndepLD_common_breakpoints_index[ch],alone_common_SNPs_index[ch] = HG.CompleteLDPartition(standardized_genotype_matrix=common_geno_matrix_standard,cutoff=args.corr,window_size=args.window)
+			print("hello",IndepLD_common_breakpoints_index[ch])
+			print("%d complete independent LD blocks were found" %(len(IndepLD_common_breakpoints_index[ch])))
+
+			if len(alone_common_SNPs_index[ch]) > 0:
+				for i in alone_common_SNPs_index[ch]:
+					full_index = common_allele_index[ch][i] # conver the common allele index to the index of all the variants 
+					L.write(str(ch+"\t"+str(variant_positions[ch][full_index]))+"\n")
+
+
+	## calculate SNP frequencies from large independe blocks
+
 	for ch in chromosome:
-		geno_matrix[ch] = np.transpose(hap_matrix_d1[ch] + hap_matrix_d2[ch])
-		r,c = geno_matrix[ch].shape
+			common_breakpoints = IndepLD_common_breakpoints_index[ch]
+			gw_independent_breakpoints[ch] = HG.convert_independent_genomewide_breakpoints(common_breakpoints,common_allele_index[ch],len(variant_names[ch]))
+			print(gw_independent_breakpoints[ch])
+	with open(args.output+"_independent_genomewide_partition.txt", "w") as IND_PARTITION:
+		for ch in chromosome:
+			for i in range(len(gw_independent_breakpoints[ch])):
+				left = gw_independent_breakpoints[ch][i][0]
+				right = gw_independent_breakpoints[ch][i][1]
+				IND_PARTITION.write(str(ch)+"\t"+ str(variant_positions[ch][left]) + "\t" + str(variant_positions[ch][right]) + "\t"+str(left)+"\t"+str(right)+"\n")
 
-		# calculating the allele frequency and find common alleles 
-		allele_frequency = np.sum(geno_matrix[ch],axis = 0) / (2*r)
-		common_allele_index[ch] = [i for i in range(len(allele_frequency)) if allele_frequency[i] > 0.05 and allele_frequency[i] < 0.95 ]
-		common_geno_matrix[ch] = geno_matrix[ch][:,common_allele_index[ch]]
-		common_variant_names[ch] = [variant_names[ch][i] for i in common_allele_index[ch]]
-		common_variant_positions[ch] =[variant_positions[ch][i] for i in common_allele_index[ch]]
+elif args.large_block == "uniform":
+	step_size = args.stepsize
 
-		#standardize the genotype matrix
-		common_geno_matrix_standard = preprocessing.scale(common_geno_matrix[ch])
-		#partition into complete independent LD blocks
-		print("start finding complete independent LD blocks using common SNPs with maf > 0.1")
-
-		IndepLD_common_breakpoints_index[ch],alone_common_SNPs_index[ch] = HG.CompleteLDPartition(standardized_genotype_matrix=common_geno_matrix_standard,cutoff=args.corr,window_size=args.window)
-		print("hello",IndepLD_common_breakpoints_index[ch])
-		print("%d complete independent LD blocks were found" %(len(IndepLD_common_breakpoints_index[ch])))
-
-		if len(alone_common_SNPs_index[ch]) > 0:
-			for i in alone_common_SNPs_index[ch]:
-				full_index = common_allele_index[ch][i] # conver the common allele index to the index of all the variants 
-				L.write(str(ch+"\t"+str(variant_positions[ch][full_index]))+"\n")
-
-
-## calculate SNP frequencies from large independe blocks
-
-for ch in chromosome:
-		common_breakpoints = IndepLD_common_breakpoints_index[ch]
-		gw_independent_breakpoints[ch] = HG.convert_independent_genomewide_breakpoints(common_breakpoints,common_allele_index[ch],len(variant_names[ch]))
-
-with open(args.output+"_independent_genomewide_partition.txt", "w") as IND_PARTITION:
 	for ch in chromosome:
-		for i in range(len(gw_independent_breakpoints[ch])):
-			left = gw_independent_breakpoints[ch][i][0]
-			right = gw_independent_breakpoints[ch][i][1]
-			IND_PARTITION.write(str(ch)+"\t"+ str(variant_positions[ch][left]) + "\t" + str(variant_positions[ch][right]) + "\t"+str(left)+"\t"+str(right)+"\n")
+		gw_independent_breakpoints[ch] = []
+		chromosome_length = max(variant_positions[ch])
+		uniform_block_intervals = list(range(step_size,chromosome_length+step_size,step_size))
+		for i in range(len(uniform_block_intervals)):
+			if i == 0:
+				start_bp = 0
+				end_bp = uniform_block_intervals[i]
+				start_index = 0
+				end_index = int(max(np.where(np.asarray(variant_positions[ch]) < end_bp)[0]))
+
+			else:
+				start_bp = uniform_block_intervals[i-1]
+				end_bp = uniform_block_intervals[i]
+				start_index = int(min(np.where(np.asarray(variant_positions[ch]) > start_bp)[0]))
+				end_index = int(max(np.where(np.asarray(variant_positions[ch]) < end_bp)[0]))
+			gw_independent_breakpoints[ch].append([start_index,end_index])
+		print(gw_independent_breakpoints[ch])
+
 
 
 for ch in chromosome:
@@ -144,6 +174,9 @@ ecotype_frequency_all = np.zeros((0,len(ind_names)))
 for ch in chromosome:
 	length_all.extend(length[ch])
 	ecotype_frequency_all = np.concatenate((ecotype_frequency_all,ecotype_frequency_selected[ch]),axis=0)
+
+if args.ecotype_matrix:
+	np.savetxt(args.output+"_ecotype_frequency_perblock_matrix.txt",ecotype_frequency_all.T,delimiter="\t")
 
 
 quantile_9 = np.quantile(length_all,0.8)
