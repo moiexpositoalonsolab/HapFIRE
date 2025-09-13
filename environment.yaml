@@ -217,7 +217,6 @@ dependencies:
   - sed=4.9=h6688a6e_0
   - setuptools=80.9.0=pyhff2d567_0
   - six=1.17.0=pyhe01879c_1
-  - sysroot_linux-64=2.34=h087de78_2
   - threadpoolctl=3.6.0=pyhecae5ae_0
   - tk=8.6.13=noxft_hd72426e_102
   - tktable=2.10=h8d826fa_7
